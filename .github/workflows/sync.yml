@@ -1,0 +1,23 @@
+name: Sync from upstream
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync upstream and re-apply UUID
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote add upstream https://github.com/yonggekkk/Cloudflare-vless-trojan.git
+          git fetch upstream
+          git merge upstream/main --no-edit || true
+          # 重新应用自定义 UUID（防止上游覆盖）
+          sed -i 's/86c50e3a-5b87-49dd-bd20-03c7f2735e40/902ac205-ed30-47d4-95ce-b34954316ec8/g' Vless_workers_pages/_worker.js
+          git add -A
+          git diff --cached --quiet || (git commit -m "Sync upstream + re-apply UUID" && git push)
