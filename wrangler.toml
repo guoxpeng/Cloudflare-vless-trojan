@@ -1,3 +1,3 @@
 name = "vless-proxy"
-main = "Vless_workers_pages/_worker.js"
+main = "Vless_workers_pages/_worker-clear.js"
 compatibility_date = "2026-01-20"
