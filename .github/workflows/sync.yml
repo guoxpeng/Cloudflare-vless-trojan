@@ -17,7 +17,10 @@ jobs:
           git remote add upstream https://github.com/yonggekkk/Cloudflare-vless-trojan.git
           git fetch upstream
           git merge upstream/main --no-edit || true
-          # 重新应用自定义 UUID（防止上游覆盖）
+          # 重新应用自定义 UUID 到混淆版
           sed -i 's/86c50e3a-5b87-49dd-bd20-03c7f2735e40/902ac205-ed30-47d4-95ce-b34954316ec8/g' Vless_workers_pages/_worker.js
+          # 从上游明文版重新生成带自定义 UUID 的部署版
+          cp "Vless_workers_pages/_worker明.js" Vless_workers_pages/_worker-clear.js
+          sed -i 's/86c50e3a-5b87-49dd-bd20-03c7f2735e40/902ac205-ed30-47d4-95ce-b34954316ec8/g' Vless_workers_pages/_worker-clear.js
           git add -A
           git diff --cached --quiet || (git commit -m "Sync upstream + re-apply UUID" && git push)
